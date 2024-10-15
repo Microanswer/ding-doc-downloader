@@ -104,6 +104,17 @@ function getUserInfo() {
     })
 }
 
+function getCorpId() {
+    let line = document.cookie.split(";").find(line => line.includes("portal_corp_id"));
+    if (line) {
+        return Promise.resolve(line.split("=").pop().trim());
+    }
+
+    return getUserInfo().then(({data}) => {
+        return data.orgs.find(org => org.isMainOrg).corpId;
+    });
+}
+
 
 /**
  *
@@ -126,8 +137,8 @@ async function doRequest(config) {
 
     if (!config.nocorpid) {
         if (!corpId.value) {
-            const {data} = await getUserInfo();
-            corpId.value = data.orgs.find(org => org.isMainOrg).corpId;
+            const cid = await getCorpId();
+            corpId.value = cid;
         }
         config.headers["corp-id"] = corpId.value;
     }
