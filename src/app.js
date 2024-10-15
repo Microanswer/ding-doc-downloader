@@ -49,7 +49,8 @@ if (ddddom) {
         components: {mymain: Main},
         methods: {
             showCardActionsExit() {
-                this.exit();
+                this.$refs.cardactions.classList.remove("hidden");
+                this.$refs.actionBtnStart.classList.add("hidden");
             },
             onStartClick() {
                 let _this = this;
