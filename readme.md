@@ -2,6 +2,8 @@
 
 这是一个钉钉文档下载工具，先在浏览器打开钉钉文档的站点，再运行本工具。
 
+[开始使用](https://test.microanswer.cn/dingdocdownloader/)
+
 ## 预览
 
 ![](./preview.png)
