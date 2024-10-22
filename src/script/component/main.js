@@ -112,6 +112,15 @@ module.exports = {
         },
         async getDocInfoAndChild(dentryUuid) {
             const {data} = await getDocList(dentryUuid);
+
+            // 还有更多数据，那么继续加载。
+            while (data.hasMore) {
+                const {data: moreData} = await getDocList(dentryUuid, data.loadMoreId);
+                data.hasMore = moreData.hasMore;
+                data.loadMoreId = moreData.loadMoreId;
+                data.children = data.children.concat(moreData.children||[]);
+            }
+
             this.$refs.progressTip.textContent = data.name;
             this.$refs.progress.classList.add("hidden");
             this.addDentry(data);
@@ -130,7 +139,7 @@ module.exports = {
         addDentry(dentryInfo) {
             this.dentrys.push(dentryInfo);
             this.$refs.list.append(this.$createElement(h => {
-                return h("DentryItem", {ref: "di", props: () => ({dentryInfo: dentryInfo}), on: {selectChange: this.onDentrySelectChange}})
+                return h("DentryItem", {ref: "di", props: () => ({dentryInfo: dentryInfo, hasmoredata: false}), on: {selectChange: this.onDentrySelectChange}})
             }))
         }
     },

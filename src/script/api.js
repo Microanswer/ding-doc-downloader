@@ -469,25 +469,30 @@ module.exports = {
     },
 
     // 列出文档子级内容
-    getDocList(dentryUuid) {
+    getDocList(dentryUuid, loadMoreId = "") {
+        // loadMoreId
+        let query = "pageSize=100&dentryUuid=" + encodeURIComponent(dentryUuid);
+        if (loadMoreId) {
+            query += `&loadMoreId=${encodeURIComponent(loadMoreId)}`;
+        }
         return doRequest({
-            url: "/box/api/v2/dentry/list?dentryUuid=" + encodeURIComponent(dentryUuid),
+            url: "/box/api/v2/dentry/list?" + query,
             method: "GET"
         }).then(response => {
-            if (response.data.children && response.data.children.length > 0) {
+            // if (response.data.children && response.data.children.length > 0) {
 
-                // 将文件夹放在前面，文件放在后面。
-                let dirs = [];
-                let files = [];
-                for (let i = 0; i < response.data.children.length; i++) {
-                    if (response.data.children[i].dentryType === "folder") {
-                        dirs.push(response.data.children[i]);
-                    } else {
-                        files.push(response.data.children[i]);
-                    }
-                }
-                response.data.children = dirs.concat(files);
-            }
+            //     // 将文件夹放在前面，文件放在后面。
+            //     let dirs = [];
+            //     let files = [];
+            //     for (let i = 0; i < response.data.children.length; i++) {
+            //         if (response.data.children[i].dentryType === "folder") {
+            //             dirs.push(response.data.children[i]);
+            //         } else {
+            //             files.push(response.data.children[i]);
+            //         }
+            //     }
+            //     response.data.children = dirs.concat(files);
+            // }
 
             return response;
         })

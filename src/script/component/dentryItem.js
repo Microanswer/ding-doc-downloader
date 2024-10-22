@@ -4,11 +4,17 @@ const utils = require("../util");
 const {dalert} = require("./dialog");
 const DentryItem = {
     props: {
-        dentryInfo: {type: Object}
+        dentryInfo: {type: Object},
+        hasmoredata: {type: Boolean},
     },
     components: {
         DentryItem: () => DentryItem,
         Loading: Loading
+    },
+    created(){
+        this.hasMore = this.$props.hasmoredata;
+        // console.log("this.hasMore", this.hasMore, this.$props.hasmoredata, this.hasmoredata)
+        // console.log("this.dentryInfo", this.dentryInfo)
     },
     render(h) {
 
@@ -45,7 +51,7 @@ const DentryItem = {
         let childrenDom = [];
         if ((this.dentryInfo.children||[]).length > 0) {
             (this.dentryInfo.children||[]).map(child => {
-                childrenDom.push(h("DentryItem", {ref: "di", on: {selectChange: this.onChildrenSelectChange}, props: () => ({dentryInfo: child})}))
+                childrenDom.push(h("DentryItem", {ref: "di", on: {selectChange: this.onChildrenSelectChange}, props: () => ({dentryInfo: child, hasmoredata: true})}))
             });
         }
 
@@ -71,15 +77,15 @@ const DentryItem = {
         onChildrenSelectChange(arg) {
             this.$emit("selectChange", {data: [this.dentryInfo, ...arg.data], selected: arg.selected});
         },
-        onSelectChange(){
+        async onSelectChange(){
             let selected = this.$refs.checkbox.checked;
             this.$emit("selectChange", {data: [this.dentryInfo], selected: selected});
 
-            // 如果选中的是一个目录，那么将目录下面的所有内容也选中。
+            // 如果选中的是一个有下级内容的，那么将下面的所有内容也选中。
             if (this.dentryInfo.hasChildren) {
 
-                // 已经加载出来了数据，那么直接选中。
-                if (this.dentryInfo.children && this.dentryInfo.children.length > 0) {
+                // 已经加载出来了数据，没有更多数据那么直接选中。
+                if (!this.hasMore) {
                     let di = this.$refs.di;
                     if (!di) return;
                     if (!Array.isArray(di)) {
@@ -89,8 +95,10 @@ const DentryItem = {
                         di[i].$select(selected);
                     }
                 } else {
-                    // 没有加载出来数据，那么立即加载。
-                    this.loadChildrenData(selected);
+                    // 还有数据，那么立即加载。
+                    while (this.hasMore) {
+                        await this.loadChildrenData(selected, this.loadMoreId);
+                    }
                 }
             }
         },
@@ -100,12 +108,14 @@ const DentryItem = {
                 this.onSelectChange();
             }
         },
-        async loadChildrenData(selected) {
+        async loadChildrenData(selected, loadMoreId) {
             this.$refs.diricon.classList.add("hidden");
             this.$refs.loading.$el.classList.remove("hidden");
 
-            const {data} = await getDocList(this.dentryInfo.dentryUuid);
+            const {data} = await getDocList(this.dentryInfo.dentryUuid, loadMoreId);
             this.dentryInfo.children = data.children;
+            this.hasMore = data.hasMore;
+            this.loadMoreId = data.loadMoreId || "";
             for (let i = 0; i < this.dentryInfo.children.length; i++) {
                 this.addDentry(this.dentryInfo.children[i], selected);
             }
@@ -113,18 +123,20 @@ const DentryItem = {
             this.$refs.diricon.classList.remove("hidden");
             this.$refs.loading.$el.classList.add("hidden");
         },
-        onChildrenOpenChange() {
+        async onChildrenOpenChange() {
             // console.log("详情：", this.$refs.details.open, "是否选中：", this.$refs.checkbox.checked);
 
             // 如果是打开目录，但是目录下没有数据，那么尝试加载数据。
-            if (this.$refs.details.open && (!this.dentryInfo.children || this.dentryInfo.children.length <= 0)) {
-               this.loadChildrenData(this.$refs.checkbox.checked);
+            if (this.$refs.details.open) {
+                while (this.hasMore) {
+                    await this.loadChildrenData(this.$refs.checkbox.checked, this.loadMoreId);
+                }
             }
         },
 
         addDentry(dentryInfo, selected) {
             const newdti = this.$createElement(h => {
-                return h("DentryItem", {ref: "di", on: {selectChange: this.onChildrenSelectChange}, props: () => ({dentryInfo: dentryInfo})});
+                return h("DentryItem", {ref: "di", on: {selectChange: this.onChildrenSelectChange}, props: () => ({dentryInfo: dentryInfo, hasmoredata: true})});
             });
             if (selected) {
                 let di = this.$refs.di;
@@ -277,6 +289,10 @@ const DentryItem = {
                 }
             }
         }
+    },
+    data: {
+        hasMore: true, // 标记当前节点下是否还有更多数据可以加载。
+        loadMoreId: "", // 加载更多数据使用的游标id，会在上一个加载列表的请求中返回的。
     }
 }
 

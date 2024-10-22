@@ -1,7 +1,7 @@
 const Baby = require("./script/index");
 const Main = require("./script/component/main");
 const { dconfirm} = require("./script/component/dialog");
-const version = "1.0.0";
+const version = "1.0.1";
 
 let ddddom = document.querySelector(`.my-dingdocdownloader`);
 if (ddddom) {
