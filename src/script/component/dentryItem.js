@@ -1,7 +1,6 @@
 const {getDocList, downloadBoard, httpDownload, downloadAmind, downloadAdoc, downloadAxls, downloadDocument} = require("../api");
 const Loading = require("./loading");
 const utils = require("../util");
-const {dalert} = require("./dialog");
 const DentryItem = {
     props: {
         dentryInfo: {type: Object},
