@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>钉钉文档下载器</title>
 </head>
-<body class="m-4">
-<div role="alert" class="alert alert-warning">
+<body class="m-4" id="ddddddoc-downloader">
+<div role="alert" class="dddd-alert dddd-alert-warning">
     <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6 shrink-0 stroke-current"
@@ -16,10 +16,23 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
     </svg>
     <span>本工具仅作学习交流，请勿商用。由本工具造成的任何损失由用户自身承担，点击开始表示同意本政策。</span>
 </div>
 
+<p class="mt-4">
+    <b>现在打开的是开发环境</b>
+</p>
+<p>
+    在开发环境页面下（此页面）无法进行钉钉接口的调用，因此无法进行调试。你可以将下方的按钮拖动至书签栏，然后打开【钉钉文档】页面后，再点击刚才拖到书签栏的按钮，开始进行调试。
+</p>
+<div class="mt-4">
+    <a class="dddd-btn dddd-btn-xs"
+       href="javascript:var s = document.createElement('script');s.src='http://localhost:56860/main.js?t='+Math.random();document.head.append(s)">[开发版]钉钉文档下载器</a>
+</div>
+<p class="mt-4">
+    <a class="dddd-link" href="https://alidocs.dingtalk.com/i/desktop/my-space" target="_blank">立即跳转到钉钉文档</a>
+</p>
 </body>
 </html>

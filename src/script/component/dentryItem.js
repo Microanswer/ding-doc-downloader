@@ -33,12 +33,12 @@ const DentryItem = {
 
         if (!this.dentryInfo.hasChildren) {
             return h("li", {class: ""}, [h("a", {}, [
-                h("input", {ref: "checkbox", class: "checkbox checkbox-xs", type: "checkbox", on: {change: this.onSelectChange}}),
+                h("input", {ref: "checkbox", class: "dddd-checkbox dddd-checkbox-xs", type: "checkbox", on: {change: this.onSelectChange}}),
                 h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis text-neutral", title: txt}, [
                     h("span", {class: "mr-2"}, [
                         icon,
                         h("span", {ref: "downloadStat", class: "ml-2 hidden"}, [
-                            h("div", {ref: "downloadProgress", role:"progressbar", class: "radial-progress text-primary", style: {"--value": "0", "--size": "12px", "--thickness": "3px"}}, []),
+                            h("div", {ref: "downloadProgress", role:"progressbar", class: "dddd-radial-progress text-primary", style: {"--value": "0", "--size": "12px", "--thickness": "3px"}}, []),
                             h("span", {ref: "downloadResult", class: "hidden"}, "❗")
                         ])
                     ]),
@@ -54,23 +54,25 @@ const DentryItem = {
             });
         }
 
-        return h("li", {class: ""}, [   h("details", {ref: "details", open:false, on:{"toggle": this.onChildrenOpenChange}}, [
-            h("summary", {}, [
-                h("input", {ref: "checkbox", class: "checkbox checkbox-xs",type:"checkbox", on: {change: this.onSelectChange}}),
-                h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis", title: this.dentryInfo.name}, [
-                    h("span", {class: "mr-2"}, [
-                        h("span", {ref: "diricon"}, icon),
-                        h("Loading", {ref: "loading", class: "hidden"}),
-                        h("span", {ref: "downloadStat", class: "ml-2 hidden"}, [
-                            h("div", {ref: "downloadProgress",role:"progressbar", class: "radial-progress text-primary", style: {"--value": "0", "--size": "12px", "--thickness": "3px"}}, []),
-                            h("span", {ref: "downloadResult", class: "hidden"}, "❗")
-                        ])
-                    ]),
-                    txt
-                ])
-            ]),
-            h("ul", {ref: "children"}, childrenDom)
-        ])])
+        return h("li", {class: ""}, [
+            h("details", {ref: "details", open: false, on: {"toggle": this.onChildrenOpenChange}}, [
+                h("summary", {style: {"display": "grid"}}, [
+                    h("input", {ref: "checkbox", class: "dddd-checkbox dddd-checkbox-xs", type: "checkbox", on: {change: this.onSelectChange}}),
+                    h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis", title: this.dentryInfo.name}, [
+                        h("span", {class: "mr-2"}, [
+                            h("span", {ref: "diricon"}, icon),
+                            h("Loading", {ref: "loading", class: "hidden"}),
+                            h("span", {ref: "downloadStat", class: "ml-2 hidden"}, [
+                                h("div", {ref: "downloadProgress", role: "progressbar", class: "dddd-radial-progress text-primary", style: {"--value": "0", "--size": "12px", "--thickness": "3px"}
+                                }, []),
+                                h("span", {ref: "downloadResult", class: "hidden"}, "❗")
+                            ])
+                        ]),
+                        txt
+                    ])
+                ]),
+                h("ul", {ref: "children"}, childrenDom)
+            ])])
     },
     methods: {
         onChildrenSelectChange(arg) {

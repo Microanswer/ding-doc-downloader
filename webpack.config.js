@@ -35,7 +35,10 @@ module.exports = {
     devServer: {
         open: true,
         compress: true,
-        port: 3000
+        port: 56860,
+        hot: false,
+        liveReload: false,
+        webSocketServer: false
     },
     plugins: [
         new CssMinimizerPlugin({

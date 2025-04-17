@@ -7,16 +7,16 @@ const DingTalkDomain = "alidocs.dingtalk.com";
 module.exports = {
     render(h) {
         return h("div", {}, [
-            h("div", {class: "label px-0"}, [
-                h("div", {ref:"progressTip", class: "label-text"}, "我的文档"),
-                h("div", {ref: "btnArea", class: "label-text"}, [
-                    h("a", {ref: "downloadBtn", class: "link text-accent hidden", on: {click: this.onDownloadClick}}, "下载选中"),
-                    h("a", {ref: "reloadBtn", class: "link text-accent hidden", on: {click: this.reload}}, "重新加载")
+            h("div", {class: "dddd-label px-0 mb-2 flex flex-row items-center justify-between"}, [
+                h("div", {ref:"progressTip", class: "dddd-label-text"}, "我的文档"),
+                h("div", {ref: "btnArea", class: "dddd-label-text"}, [
+                    h("a", {ref: "downloadBtn", class: "dddd-link dddd-link-accent hidden", on: {click: this.onDownloadClick}}, "下载选中"),
+                    h("a", {ref: "reloadBtn", class: "dddd-link dddd-link-accent hidden", on: {click: this.reload}}, "重新加载")
                 ])
             ]),
             h("div", {class: "overflow-auto", style: {maxHeight: "700px"}}, [
-                h("progress", {ref: "progress", class: "progress"}, []),
-                h("ul", {ref: "list", class: "menu menu-xs bg-base-200 rounded-lg w-full hidden"}, this.dentrys.map(dentryInfo => {
+                h("progress", {ref: "progress", class: "dddd-progress"}, []),
+                h("ul", {ref: "list", class: "dddd-menu dddd-menu-sm bg-base-200 rounded-lg w-full hidden"}, this.dentrys.map(dentryInfo => {
                     return h("DentryItem", {ref: "di", props: () => ({dentryInfo: dentryInfo}), on: {selectChange: this.onDentrySelectChange}})
                 }))
             ])
@@ -43,7 +43,7 @@ module.exports = {
                 this.$refs.progressTip.classList.add("text-error");
                 this.$refs.progressTip.textContent = "读取失败，当前页面不是钉钉文档页面。请打开钉钉文档页面后再打开本工具。";
                 this.$refs.progress.classList.add("hidden");
-                this.$emit("notdd");
+                this.$emit("dddd_notdd");
                 return;
             }
 
@@ -84,6 +84,12 @@ module.exports = {
             if (!Array.isArray(allDi)) {
                 allDi = [allDi];
             }
+
+            // 如果没有选中任何文件，点击时什么也不做。
+            if (this.selecteds.length <= 0) {
+                return;
+            }
+
 
             try {
                 // 先让用户选择一个目录保存。

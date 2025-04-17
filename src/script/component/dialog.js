@@ -5,18 +5,18 @@ function Dialog(title, msg, onConfirm) {
         render(h) {
 
             let actions = [
-                h("button", {class: "btn btn-primary", on: {click: this.onConfirmClick}}, "确定")
+                h("button", {class: "dddd-btn dddd-btn-primary text-white", on: {click: this.onConfirmClick}}, "确定")
             ];
             if (onConfirm) {
-                actions.push(h("button", {class: "btn", on: {click: this.onCloseClick}}, "取消"));
+                actions.push(h("button", {class: "dddd-btn", on: {click: this.onCloseClick}}, "取消"));
             }
 
 
-            return h("div", { class: "modal"},[
-                h("div", {class: "modal-box"},[
+            return h("div", { class: "dddd-modal"},[
+                h("div", {class: "dddd-modal-box"},[
                     h("h3", {class: "text-lg font-bold"}, title),
                     h("p", {class: "py-4"}, msg),
-                    h("div", {class: "modal-action"}, actions)
+                    h("div", {class: "dddd-modal-action"}, actions)
                 ])
             ])
         },
