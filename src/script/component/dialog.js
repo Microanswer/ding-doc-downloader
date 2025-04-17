@@ -45,7 +45,7 @@ function Dialog(title, msg, onConfirm) {
     });
 
     let dom = d.$mount();
-    window.document.body.append(dom);
+    document.querySelector(`.my-dingdocdownloader`).append(dom);
     d.$show();
 }
 

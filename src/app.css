@@ -7,3 +7,8 @@
 html {
     scrollbar-gutter: auto !important;
 }
+
+
+.dddd-btn.dddd-btn-primary {
+    color: var(--color-white)!important;
+}

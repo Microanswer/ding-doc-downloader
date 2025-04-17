@@ -10,7 +10,7 @@ module.exports = {
             h("div", {class: "dddd-label px-0 mb-2 flex flex-row items-center justify-between"}, [
                 h("div", {ref:"progressTip", class: "dddd-label-text"}, "我的文档"),
                 h("div", {ref: "btnArea", class: "dddd-label-text"}, [
-                    h("a", {ref: "downloadBtn", class: "dddd-link dddd-link-accent hidden", on: {click: this.onDownloadClick}}, "下载选中"),
+                    h("a", {ref: "downloadBtn", style:{color: 'var(--color-accent)'}, class: "dddd-link hover:underline hidden", on: {click: this.onDownloadClick}}, "下载选中"),
                     h("a", {ref: "reloadBtn", class: "dddd-link dddd-link-accent hidden", on: {click: this.reload}}, "重新加载")
                 ])
             ]),
