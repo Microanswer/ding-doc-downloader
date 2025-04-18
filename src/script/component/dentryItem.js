@@ -32,7 +32,7 @@ const DentryItem = {
         let txt = this.dentryInfo.name + fileSize;
 
         if (!this.dentryInfo.hasChildren) {
-            return h("li", {class: "hover:bg-zinc-200"}, [h("a", {}, [
+            return h("li", {class: "rounded-sm hover:bg-zinc-200"}, [h("a", {}, [
                 h("input", {ref: "checkbox", class: "dddd-checkbox dddd-checkbox-xs", type: "checkbox", on: {change: this.onSelectChange}}),
                 h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis text-neutral", title: txt}, [
                     h("span", {class: "mr-2"}, [

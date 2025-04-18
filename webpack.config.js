@@ -3,6 +3,7 @@ const HtmlInlineCssPlugin = require("html-inline-css-webpack-plugin");
 const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const webpack = require("webpack");
 const devMode = process.env.NODE_ENV !== "production";
 module.exports = {
     entry: [
@@ -55,6 +56,9 @@ module.exports = {
             template: "./src/app.ejs",
             scriptLoading: "blocking",
             inject: true
+        }),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         }),
         ...(function() {
             let plugins = [];

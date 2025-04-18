@@ -8,9 +8,9 @@ module.exports = {
     render(h) {
         return h("div", {}, [
             h("div", {class: "dddd-label px-0 mb-2 flex flex-row items-center justify-between"}, [
-                h("div", {ref:"progressTip", class: "dddd-label-text"}, "我的文档"),
+                h("div", {ref:"progressTip", class: "dddd-label-text text-black"}, "我的文档"),
                 h("div", {ref: "btnArea", class: "dddd-label-text"}, [
-                    h("a", {ref: "downloadBtn", style:{color: 'var(--color-accent)'}, class: "dddd-link hover:underline hidden", on: {click: this.onDownloadClick}}, "下载选中"),
+                    h("a", {ref: "downloadBtn", class: "dddd-btn dddd-btn-xs hidden", on: {click: this.onDownloadClick}}, "下载选中"),
                     h("a", {ref: "reloadBtn", class: "dddd-link dddd-link-accent hidden", on: {click: this.reload}}, "重新加载")
                 ])
             ]),
@@ -48,7 +48,7 @@ module.exports = {
             }
 
             // 打开了某个文件或目录
-            if (href.includes("/i/nodes/")) {
+            if (href.includes("/i/nodes/") || href.includes("/i/desktop/folders")) {
                 let dentryId = window.location.pathname.split("/").pop()
                 this.getDocInfoAndChild(dentryId);
                 return;
@@ -99,6 +99,10 @@ module.exports = {
                     await allDi[i].$download(dirHandle);
                 }
             }catch (e) {
+                if (e.code === DOMException.ABORT_ERR) {
+                    // 用户取消了，这种错不用提示。
+                    return;
+                }
                 dalert("出错", `下载出错了：${e.message}`);
             }
 
