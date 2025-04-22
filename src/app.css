@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-    root: "#ddddddoc-downloader";
+    root: ".ddddddoc-root";
     prefix: "dddd-";
 }
 

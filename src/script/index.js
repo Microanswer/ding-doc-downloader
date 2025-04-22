@@ -112,6 +112,10 @@ function h(tag, attr, children) {
                 continue;
             }
 
+            if (key === "popovertarget") {
+                ele.popoverTargetElement = document.getElementById(key);
+                continue;
+            }
             ele[key] = attr[key];
         }
     }

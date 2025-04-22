@@ -4,15 +4,16 @@ function Dialog(title, msg, onConfirm) {
     let d = new Baby({
         render(h) {
 
-            let actions = [
-                h("button", {class: "dddd-btn dddd-btn-primary text-white", on: {click: this.onConfirmClick}}, "确定")
-            ];
+            let actions = [];
             if (onConfirm) {
+                actions.push(h("button", {class: "dddd-btn dddd-btn-primary text-white", on: {click: this.onConfirmClick}}, "确定"))
                 actions.push(h("button", {class: "dddd-btn", on: {click: this.onCloseClick}}, "取消"));
+            } else {
+                actions.push(h("button", {class: "dddd-btn", on: {click: this.onConfirmClick}}, "关闭"))
             }
 
 
-            return h("div", { class: "dddd-modal"},[
+            return h("div", { class: "dddd-modal ddddddoc-root"},[
                 h("div", {class: "dddd-modal-box"},[
                     h("h3", {class: "text-lg font-bold"}, title),
                     h("p", {class: "py-4"}, msg),
