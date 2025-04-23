@@ -1,6 +1,7 @@
 const {getDocList, downloadBoard, httpDownload, downloadAmind, downloadAdoc, downloadAxls, downloadDocument} = require("../api");
 const Loading = require("./loading");
 const utils = require("../util");
+const {getCfg, CFG_KEY} = require("../cfg");
 const DentryItem = {
     props: {
         dentryInfo: {type: Object},
@@ -205,12 +206,14 @@ const DentryItem = {
                     try {
                         let extension = this.dentryInfo.extension;
                         let newext = "";
-                        if (extension === "adraw" || extension === "amind") {
-                            newext = ".jpg";
+                        if (extension === "adraw") {
+                            newext = getCfg(CFG_KEY.EXPORT_ADRAW_AS, ".jpg");
+                        } else if (extension === "amind") {
+                            newext = getCfg(CFG_KEY.EXPORT_AMIND_AS, ".jpg");
                         } else if (extension === "adoc") {
-                            newext = ".docx";
+                            newext = getCfg(CFG_KEY.EXPORT_ADOC_AS, ".docx");
                         } else if (extension === "axls") {
-                            newext = ".xlsx";
+                            newext = getCfg(CFG_KEY.EXPORT_AXLS_AS, ".xlsx");
                         }
 
                         currentFileHandler = await dirHandler.getFileHandle(currentName + newext, {create: true});
@@ -224,7 +227,7 @@ const DentryItem = {
                         } else if (extension === "amind") {
                             url = await downloadAmind(this.dentryInfo.dentryKey, this.dentryInfo.docKey);
                         } else if (extension === "adoc") {
-                            url = await downloadAdoc(this.dentryInfo.dentryUuid, this.dentryInfo.docKey, this.dentryInfo.dentryKey, this.dentryInfo.contentType, this.dentryInfo.name, this.dentryInfo.fileSize);
+                            url = await downloadAdoc(this.dentryInfo.dentryUuid, this.dentryInfo.docKey, this.dentryInfo.dentryKey, this.dentryInfo.contentType, this.dentryInfo.name, this.dentryInfo.fileSize, newext);
                         } else if (extension === "axls") {
                             url = await downloadAxls(this.dentryInfo.dentryUuid, this.dentryInfo.docKey, this.dentryInfo.dentryKey, this.dentryInfo.contentType, this.dentryInfo.name, this.dentryInfo.fileSize);
                         } else if (this.dentryInfo.contentType !== "alidoc" && this.dentryInfo.contentType !== "link") {

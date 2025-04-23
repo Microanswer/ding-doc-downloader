@@ -19,6 +19,44 @@ function getAccessToken() {
     });
 }
 
+function getDingWebAppVersion() {
+
+    // let docframe = document.querySelectorAll("iframe");
+    //
+    // if (window.WSM_config && window.WSM_config.appVersion) {
+    //     return window.WSM_config.appVersion;
+    // }
+
+    return "4.78.1";
+
+}
+
+/**
+ *
+ * @returns {Promise<string>}
+ */
+async function getDocOpenToken() {
+    const resp = await lwpClient.sendMsg("/r/Adaptor/DingTalkDocI/getDocOpenToken", {
+        "A-DENTRY-KEY": "***",
+        "utm_source": "portal",
+        "utm_medium": "portal_space_file_tree",
+        "SOURCE_DOC_APP": "doc",
+        "A-DOC-KEY": "****",
+        "mid": "5578471745401562987895797 0"
+    }, [
+        "{{cropid}}",
+        "{{doc-key}}"
+    ]);
+
+    const {body, code} = resp;
+
+    if (code !== 200) {
+        throw new Error(JSON.stringify(resp));
+    }
+
+    return body;
+}
+
 /**
  *
  */
@@ -33,7 +71,15 @@ function getUserInfo() {
     })
 }
 
-function getCorpId() {
+/**
+ *
+ * @returns {Promise<string>}
+ */
+async function getCorpId() {
+    if (corpId.value) {
+        return corpId.value;
+    }
+
     let line = document.cookie.split(";").find(line => line.includes("portal_corp_id"));
     if (line) {
         return Promise.resolve(line.split("=").pop().trim());
@@ -79,9 +125,239 @@ async function doRequest(config) {
     });
 }
 
+let content =
+    {
+        "version": 1,
+        "type": "application/x-alidocs-package",
+        "main": "00000000-0000-0000-0000-000000000001",
+        "plugins": "00000000-0000-0000-0000-000000000002",
+        "parts": {
+            "00000000-0000-0000-0000-000000000001": {
+                "id": "00000000-0000-0000-0000-000000000001",
+                "type": "application/x-alidocs-word",
+                "version": 1,
+                "data": {
+                    "style": {
+                        "docDefaults": {
+                            "type": "paragraph",
+                            "default": 1,
+                            "name": "dingdocnormal",
+                            "data": {"rPr": {}, "pPr": {"spacing": {"before": 8, "after": 8}}}
+                        }
+                    },
+                    "theme": [],
+                    "settings": {"titleCover": {"isHide": true}},
+                    "app": {},
+                    "numberings": {},
+                    "headers": {},
+                    "body": ["root", {
+                        "sectPr": {
+                            "pgSz": {"w": 892, "h": 1127},
+                            "pgMar": {
+                                "top": 96,
+                                "bottom": 96,
+                                "left": 72,
+                                "right": 72,
+                                "header": 56.73,
+                                "footer": 66.13,
+                                "gutter": 0
+                            }
+                        }
+                    }, ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 0,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "decimal", "text": "%1.", "align": "left"},
+                            "hideSymbol": false
+                        }, "ind": {"left": 0}, "uuid": "lmzzty1ef5kmlb7f8sa"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "第二版本 autor 指令编辑器完成。"]]], ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 0,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "isChecked": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "decimal", "text": "%1.", "align": "left"},
+                            "hideSymbol": false,
+                            "extraData": {}
+                        }, "ind": {"left": 0}, "uuid": "lmzzu6s809xg90q5so06"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "团队建设："]]], ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 1,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "isChecked": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "lowerLetter", "text": "%2.", "align": "left"},
+                            "hideSymbol": false,
+                            "extraData": {}
+                        }, "ind": {"left": 0}, "uuid": "lmzzubpug9lvxscsbad"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "社区平台推动完成。"]]], ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 1,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "isChecked": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "lowerLetter", "text": "%2.", "align": "left"},
+                            "hideSymbol": false,
+                            "extraData": {}
+                        }, "ind": {"left": 0}, "uuid": "lmzzujki80w1unxk6ke"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "自动化文档完成。"]]], ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 0,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "isChecked": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "decimal", "text": "%1.", "align": "left"},
+                            "hideSymbol": false,
+                            "extraData": {}
+                        }, "ind": {"left": 0}, "uuid": "lmzzv1ih46bn7axky9b"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "指纹仿真度提升，继续推进。"]]], ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 0,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "isChecked": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "decimal", "text": "%1.", "align": "left"},
+                            "hideSymbol": false,
+                            "extraData": {}
+                        }, "ind": {"left": 0}, "uuid": "lmzzxy5pswytqysadgk"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "日常指令维护。"]]], ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 0,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "isChecked": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "decimal", "text": "%1.", "align": "left"},
+                            "hideSymbol": false,
+                            "extraData": {}
+                        }, "ind": {"left": 0}, "uuid": "lmzzvj78tph96gzrxcb"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "管理形式改变："]]], ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 1,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "isChecked": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "lowerLetter", "text": "%2.", "align": "left"},
+                            "hideSymbol": false,
+                            "extraData": {}
+                        }, "ind": {"left": 0}, "uuid": "lmzzw64ykn81iyb5sh"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "建设好人才梯队。"]]], ["p", {
+                        "list": {
+                            "listId": "wno61ttrdi",
+                            "level": 1,
+                            "isOrdered": true,
+                            "isTaskList": false,
+                            "isChecked": false,
+                            "listStyleType": "DEC_LEN_LROM_P",
+                            "symbolStyle": {},
+                            "listStyle": {"format": "lowerLetter", "text": "%2.", "align": "left"},
+                            "hideSymbol": false,
+                            "extraData": {}
+                        }, "ind": {"left": 0}, "uuid": "lmzzwfmaas1wsowax1"
+                    }, ["span", {"data-type": "text"}, ["span", {"data-type": "leaf"}, "根据梯队，放权给对应人员。"]]]],
+                    "footers": {},
+                    "version": 1
+                },
+                "refs": {}
+            }
+        }
+    };
+
+// 导出 adoc → md 直接根据文档内容代码生成md内容。
+
+// 导出 adoc → docx 流程
+// upload_info
+// submitExportJob
+// queryExportJobInfo
+
+// 导出 adoc → pdf 流程：
+// upload_info
+// createExportJob
+// queryExportStatus
+//
+
+
+async function downloadDingDoc2pdf(docKey,dentryKey,name) {
+    if (name.includes(".")) {
+        let ns = name.split(".");
+        ns.pop();
+        name = ns.join(".").trim();
+    }
+
+    const {data: docData} = await getDocumentData(dentryKey, docKey);
+    const uploadBody = JSON.stringify({
+        asl: docData.documentContent.checkpoint.content,
+        optionsString: JSON.stringify({
+            "openToken": {
+                "docOpenToken": await getDocOpenToken(),
+                "corpId": await getCorpId(),
+                "docKey": docKey
+            },
+            "isNew": true,
+            "customConfig": {
+                "content": "ONLYCONTENT",
+                "mode": "PORTRAIT",
+                "watermark": "OPEN",
+                "nick": docData.fileMetaInfo.securityPolicyControl.watermarkText.rowTwo,
+                "corpName": docData.fileMetaInfo.securityPolicyControl.watermarkText.rowOne,
+                "link": "",
+                "enableTableAutofitWidth": true
+            },
+            "fileName": name,
+            "showDocTitle": true,
+            "ctxVersion": docData.documentContent.checkpoint.baseVersion,
+            "printStyle": {"backgroundColor": "var(--we_bg_default_color, rgba(255, 255, 255, 1))"},
+            "version": 1,
+            "appVersion": getDingWebAppVersion(),
+            "exportType": "pdf",
+            "corpId": await getCorpId(),
+            "lang": "zh-CN"
+        })
+    });
+    let {data: updata} = await doRequest({
+        url: "/core/api/resources/9/upload_info",
+        method: "POST",
+        headers: {
+            "a-doc-key": docKey,
+            "a-host-doc-key": ""
+        },
+        data: {
+            contentType: "",
+            resourceName: docKey,
+            size: uploadBody.length
+        },
+        nocorpid: true
+    });
+
+}
+
 
 /**
- * 下载钉钉文件，包括：钉文档、钉表格
+ * 下载钉钉文件，包括：钉文档、钉表格；如果是钉文档那么下载为docx格式，如果是表格，那么下载为 .xlsx 格式
  */
 async function downloadDingDoc(dentryUuid, docKey,dentryKey,contentType, name, size, exportType) {
     if (name.includes(".")) {
@@ -355,10 +631,19 @@ module.exports = {
      * @param contentType
      * @param name
      * @param size
+     * @param downloadFileType {".md"|".pdf"|".docx"} 下载后缀，adoc 类型的文件，支持下载为：.md, .pdf 和 .docx
      * @return {Promise<string>}
      */
-    async downloadAdoc(dentryUuid, docKey,dentryKey,contentType, name, size) {
-        return downloadDingDoc(dentryUuid, docKey, dentryKey, contentType, name, size , "dingTalkdocTodocx");
+    async downloadAdoc(dentryUuid, docKey,dentryKey,contentType, name, size, downloadFileType) {
+        if (downloadFileType === ".docx") {
+            return downloadDingDoc(dentryUuid, docKey, dentryKey, contentType, name, size, "dingTalkdocTodocx");
+        } else if (downloadFileType === ".pdf") {
+
+        } else if (downloadFileType === ".md") {
+
+        } else {
+            throw new Error(`不支持导出为${downloadFileType}格式`);
+        }
     },
 
     /**

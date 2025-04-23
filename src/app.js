@@ -1,6 +1,8 @@
 const Baby = require("./script/index");
 const Main = require("./script/component/main");
 const { dconfirm, dalert} = require("./script/component/dialog");
+const CellRadios = require("./script/component/settings/cell_radios");
+const {getCfg, CFG_KEY, setCfg} = require("./script/cfg");
 const version = "1.0.2";
 
 let ddddom = document.querySelector(`.my-dingdocdownloader`);
@@ -74,7 +76,7 @@ if (ddddom) {
 
             return dom;
         },
-        components: {mymain: Main},
+        components: {mymain: Main, CellRadios: CellRadios},
         methods: {
             showCardActionsExit() {
                 this.$refs.cardactions.classList.remove("hidden");
@@ -126,55 +128,54 @@ function showSettings() {
             h("div", {class: "font-bold text-zinc-500 mb-1"}, "导出格式"),
             h("ul", {class: "flex flex-col gap-2 select-none"}, [
 
-                h("li", {class: "dddd-dropdown dddd-dropdown-end"}, [
-                    h("div", {tabIndex:"0", role:"button", class: "flex flex-row justify-between items-center px-4 py-2 bg-zinc-100 rounded-sm hover:bg-zinc-200"}, [
-                        h("div", {}, "文档(.adoc)"),
-                        h("div", {class: "text-zinc-600"}, [
-                            h("span", {class: "text-xs"}, "导出为 .docx"),
-                            h("span", {class: "ml-2 text-lg"}, "›")
-                        ]),
-                    ]),
-                    h("ul", {tabIndex:"0", class:"dddd-dropdown-content dddd-menu bg-base-200 border border-zinc-400 rounded-box w-56 shadow-md"}, [
-                        h("li", {class: "hover:bg-zinc-200 rounded-sm"}, h("label", {class:"flex flex-row justify-between"}, [
-                            "导出为 .docx",
-                            h("input", {type: "radio", name: "aaa", class: "radio radio-xs", checked:"checked"})
-                        ])),
-                        h("li", {class: "hover:bg-zinc-200 rounded-sm"}, h("label", {class:"flex flex-row justify-between"}, [
-                            "导出为 .md",
-                            h("input", {type: "radio", name: "aaa", class: "radio radio-xs"})
-                        ])),
-                        h("li", {class: "hover:bg-zinc-200 rounded-sm"}, h("label", {class:"flex flex-row justify-between"}, [
-                            "导出为 .pdf",
-                            h("input", {type: "radio", name: "aaa", class: "radio radio-xs"})
-                        ]))
-                    ]),
-                ]),
+                h("CellRadios", {
+                    props: {
+                        title: "文档(.adoc)",
+                        name: "adoc",
+                        defaultValue: getCfg(CFG_KEY.EXPORT_ADOC_AS, ".docx"),
+                        options: [
+                            {label: "导出为 .docx", value: ".docx"},
+                            {label: "导出为 .md", value: ".md"},
+                            {label: "导出为 .pdf", value: ".pdf"},
+                        ]
+                    },
+                    on: {change: (newOp) => {setCfg(CFG_KEY.EXPORT_ADOC_AS, newOp.value)}}
+                }),
+                h("CellRadios", {
+                    props: {
+                        title: "表格(.axls)",
+                        name: "axls",
+                        defaultValue: getCfg(CFG_KEY.EXPORT_AXLS_AS, ".xlsx"),
+                        options: [
+                            {label: "导出为 .xlsx", value: ".xlsx"}
+                        ]
+                    },
+                    on: {change: (newOp) => {setCfg(CFG_KEY.EXPORT_AXLS_AS, newOp.value)}}
+                }),
+                h("CellRadios", {
+                    props: {
+                        title: "白板(.adraw)",
+                        name: "adraw",
+                        defaultValue: getCfg(CFG_KEY.EXPORT_ADRAW_AS, ".jpg"),
+                        options: [
+                            {label: "导出为 .jpg", value: ".jpg"}
+                        ]
+                    },
+                    on: {change: (newOp) => {setCfg(CFG_KEY.EXPORT_ADRAW_AS, newOp.value)}}
+                }),
+                h("CellRadios", {
+                    props: {
+                        title: "脑图(.amind)",
+                        name: "amind",
+                        defaultValue: getCfg(CFG_KEY.EXPORT_AMIND_AS, ".jpg"),
+                        options: [
+                            {label: "导出为 .jpg", value: ".jpg"}
+                        ]
+                    },
+                    on: {change: (newOp) => {setCfg(CFG_KEY.EXPORT_AMIND_AS, newOp.value)}}
+                }),
 
-                h("li", {class: "flex flex-row justify-between items-center px-4 py-2 bg-zinc-100 rounded-sm hover:bg-zinc-200"}, [
-                    h("div", {}, "表格(.axls)"),
-                    h("div", {class: "text-zinc-600"}, [
-                            h("span", {class: "text-xs"}, "导出为 .xlsx"),
-                            h("span", {class: "ml-2 text-lg"}, "›")
-                    ]),
-                ]),
-                h("li", {class: "flex flex-row justify-between items-center px-4 py-2 bg-zinc-100 rounded-sm hover:bg-zinc-200"}, [
-                    h("div", {}, "白板(.adraw)"),
-                    h("div", {class: ""}, [
-                        h("div", {class: "text-zinc-600"}, [
-                            h("span", {class: "text-xs"}, "导出为 .png"),
-                            h("span", {class: "ml-2 text-lg"}, "›")
-                        ]),
-                    ]),
-                ]),
-                h("li", {class: "flex flex-row justify-between items-center px-4 py-2 bg-zinc-100 rounded-sm hover:bg-zinc-200"}, [
-                    h("div", {}, "脑图(.amind)"),
-                    h("div", {class: "text-zinc-600"}, [
-                        h("span", {class: "text-xs"}, "导出为 .png"),
-                        h("span", {class: "ml-2 text-lg"}, "›")
-                    ]),
-                ]),
-
-                h("li", {class: "flex flex-row justify-between items-center px-4 py-2 bg-zinc-100 rounded-sm"}, [
+                h("li", {class: "flex flex-row justify-between items-center px-3 py-1 bg-zinc-100 rounded-sm"}, [
                     h("div", {class: "text-xs text-zinc-600"}, "多维表格及快捷方式不支持导出。其它不属于钉钉体系文档的文件按原文件导出。"),
                 ]),
             ]),

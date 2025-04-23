@@ -80,7 +80,7 @@ function h(tag, attr, children) {
                     if (Object.prototype.toString.call(event) === "[object CustomEvent]") {
                         listener.call(_this, event.detail);
                     } else {
-                        listener.call(_this);
+                        listener.call(_this, event);
                     }
                 });
             }
@@ -116,6 +116,18 @@ function h(tag, attr, children) {
                 ele.popoverTargetElement = document.getElementById(key);
                 continue;
             }
+
+
+            if (tag === "input" && key === "checked") {
+                if (attr.checked) {
+                    ele.setAttribute("checked", attr.checked);
+                } else {
+                    ele.removeAttribute("checked");
+                }
+                continue;
+            }
+
+            // ele.setAttribute(key, attr[key]);
             ele[key] = attr[key];
         }
     }
