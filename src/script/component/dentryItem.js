@@ -33,13 +33,13 @@ const DentryItem = {
         let txt = this.dentryInfo.name + fileSize;
 
         if (!this.dentryInfo.hasChildren) {
-            return h("li", {class: "rounded-sm hover:bg-zinc-200"}, [h("a", {}, [
+            return h("li", {class: "rounded-sm hover:bg-zinc-200 active:bg-zinc-900"}, [h("a", {}, [
                 h("input", {ref: "checkbox", class: "dddd-checkbox dddd-checkbox-xs", type: "checkbox", on: {change: this.onSelectChange}}),
-                h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis text-neutral", title: txt}, [
+                h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis text-black  active:text-white", title: txt}, [
                     h("span", {class: "mr-2"}, [
                         icon,
                         h("span", {ref: "downloadStat", class: "ml-2 hidden"}, [
-                            h("div", {ref: "downloadProgress", role:"progressbar", class: "dddd-radial-progress text-primary", style: {"--value": "0", "--size": "12px", "--thickness": "3px"}}, []),
+                            h("div", {ref: "downloadProgress", role:"progressbar", class: "dddd-radial-progress text-primary", style: {"--dddd-value": "0", "--dddd-size": "12px", "--dddd-thickness": "3px"}}, []),
                             h("span", {ref: "downloadResult", class: "hidden"}, "❗")
                         ])
                     ]),
@@ -64,7 +64,7 @@ const DentryItem = {
                             h("span", {ref: "diricon"}, icon),
                             h("Loading", {ref: "loading", class: "hidden"}),
                             h("span", {ref: "downloadStat", class: "ml-2 hidden"}, [
-                                h("div", {ref: "downloadProgress", role: "progressbar", class: "dddd-radial-progress text-primary", style: {"--value": "0", "--size": "12px", "--thickness": "3px"}
+                                h("div", {ref: "downloadProgress", role: "progressbar", class: "dddd-radial-progress text-primary", style: {"--dddd-value": "0", "--dddd-size": "12px", "--dddd-thickness": "3px"}
                                 }, []),
                                 h("span", {ref: "downloadResult", class: "hidden"}, "❗")
                             ])
@@ -204,6 +204,9 @@ const DentryItem = {
             if (selected) {
                 if (this.dentryInfo.dentryType !== "folder") {
                     try {
+
+                        this.$refs.downloadStat.classList.remove("hidden");
+
                         let extension = this.dentryInfo.extension;
                         let newext = "";
                         if (extension === "adraw") {
@@ -218,7 +221,7 @@ const DentryItem = {
 
                         currentFileHandler = await dirHandler.getFileHandle(currentName + newext, {create: true});
 
-                        this.$refs.downloadStat.classList.remove("hidden");
+                        this.$refs.downloadProgress.style.setProperty("--dddd-value", "16");
 
                         // 是个文件，那么按照文件类型下载。
                         let url = "";
@@ -236,13 +239,17 @@ const DentryItem = {
                             throw new Error(`不支持此类型文件的下载：contentType=${this.dentryInfo.contentType},extension=${extension}`);
                         }
 
+                        this.$refs.downloadProgress.style.setProperty("--dddd-value", "25");
+
+                        // 剩下 75 的百分比拿给 下载文件显示。
+
                         await httpDownload(url, currentFileHandler, (progressStat) => {
                             if (progressStat.type === "begin") {
                                 // ..
                                 // console.log("开始下载")
                             } else if (progressStat.type === "pending") {
                                 // console.log("下载中" + progressStat.percent);
-                                this.$refs.downloadProgress.style.setProperty("--value", String(progressStat.percent));
+                                this.$refs.downloadProgress.style.setProperty("--dddd-value", String(Math.round(progressStat.percent * 0.75) + 25));
                             } else if (progressStat.type === "success") {
                                 // console.log("下载中完成");
                                 this.$refs.downloadProgress.classList.add("hidden");

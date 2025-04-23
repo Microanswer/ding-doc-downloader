@@ -3,6 +3,17 @@ const utils = require("./util");
 const accessToken = {value: ""};
 const corpId = {value: ""};
 
+function randomStr(len, base) {
+    let str = "";
+    let baseLength = base.length;
+    for (let i = 0; i < len; i++) {
+        let index = Math.floor(Math.random() * baseLength);
+        str += base[index];
+    }
+
+    return str;
+}
+
 function getBase() {
     return `${window.location.protocol}//${window.location.host}`;
 }
@@ -35,18 +46,20 @@ function getDingWebAppVersion() {
  *
  * @returns {Promise<string>}
  */
-async function getDocOpenToken() {
+async function getDocOpenToken(dentryKey, docKey, cropid) {
+
+    if (!window.lwpClient) {
+        throw new Error("导出pdf需要lwp通信，当前lwp通信方案不可用。");
+    }
+
     const resp = await lwpClient.sendMsg("/r/Adaptor/DingTalkDocI/getDocOpenToken", {
-        "A-DENTRY-KEY": "***",
+        "A-DENTRY-KEY": dentryKey,
         "utm_source": "portal",
         "utm_medium": "portal_space_file_tree",
         "SOURCE_DOC_APP": "doc",
-        "A-DOC-KEY": "****",
-        "mid": "5578471745401562987895797 0"
-    }, [
-        "{{cropid}}",
-        "{{doc-key}}"
-    ]);
+        "A-DOC-KEY": docKey,
+        "mid": randomStr(25, "0192837465") + " 0"
+    }, [cropid, docKey]);
 
     const {body, code} = resp;
 
@@ -313,7 +326,7 @@ async function downloadDingDoc2pdf(docKey,dentryKey,name) {
         asl: docData.documentContent.checkpoint.content,
         optionsString: JSON.stringify({
             "openToken": {
-                "docOpenToken": await getDocOpenToken(),
+                "docOpenToken": await getDocOpenToken(dentryKey, docKey, await getCorpId()),
                 "corpId": await getCorpId(),
                 "docKey": docKey
             },
@@ -353,6 +366,53 @@ async function downloadDingDoc2pdf(docKey,dentryKey,name) {
         nocorpid: true
     });
 
+
+    // 将数据上传到oss
+    await httpRequest({
+        url: updata.uploadUrl,
+        method: "put",
+        headers: {
+            "Content-Type": ""
+        },
+        data: uploadBody
+    });
+
+    // 创建导出任务
+    let {data: jobData} = await doRequest({
+        url: "/api/v2/files/createExportJob",
+        method: "POST",
+        headers: {
+            "a-dentry-key": dentryKey,
+            "a-doc-key": docKey,
+        },
+        data: {
+            scene: "normal",
+            storagePath: updata.storagePath
+        },
+        nocorpid: true
+    });
+
+    // 检查任务状态
+    let done = false;
+    let ossUrl = jobData.url;
+    while (!done) {
+        await utils.sleep(1000);
+        let {data: exportData} = await doRequest({
+            url: "/api/v2/files/queryExportStatus?jobId=" + jobData.jobId,
+            method: "GET",
+            headers: {
+                "a-dentry-key": dentryKey,
+                "a-doc-key": docKey,
+            },
+            nocorpid: true
+        });
+        done = exportData.done;
+        if (done) {
+            break;
+        }
+    }
+
+    return ossUrl;
 }
 
 
@@ -638,7 +698,7 @@ module.exports = {
         if (downloadFileType === ".docx") {
             return downloadDingDoc(dentryUuid, docKey, dentryKey, contentType, name, size, "dingTalkdocTodocx");
         } else if (downloadFileType === ".pdf") {
-
+            return downloadDingDoc2pdf(docKey, dentryKey, name);
         } else if (downloadFileType === ".md") {
 
         } else {
