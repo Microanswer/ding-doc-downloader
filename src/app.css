@@ -9,6 +9,45 @@ html {
 }
 
 
+.dddd-menu li a:hover{
+    background-color: color-mix(in oklab, var(--color-base-content) 10%, transparent)!important;
+}
+
+
+
+.dddd-menu li a:active{
+    color: var(--dddd-menu-active-fg)!important;
+    background-color: var(--dddd-menu-active-bg)!important;
+}
+
+
+input.dddd-checkbox{
+    width: var(--dddd-size) !important;
+    height: var(--dddd-size) !important;
+}
+
+input.dddd-checkbox-xs{
+    padding: 0.125rem!important;
+}
+
+input.dddd-checkbox-neutral {
+    color: var(--color-neutral-content)!important;
+}
+
 .dddd-btn.dddd-btn-primary {
     color: var(--color-white)!important;
+}
+
+.dddd-menu summary::after{
+    width: 0.5rem!important;
+    height: 0.5rem!important;
+}
+
+.dddd-menu-sm {
+    :where(li:not(.dddd-menu-title) > *:not(ul, details, .dddd-menu-title)),
+    :where(li:not(.dddd-menu-title) > details > summary:not(.dddd-menu-title)) {
+
+        padding-block: 0.15rem !important;
+        font-size: 0.75rem!important;
+    }
 }

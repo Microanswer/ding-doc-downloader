@@ -24,18 +24,18 @@ const DentryItem = {
             icon = "📁";
         } else {
             if (this.dentryInfo.fileSize) {
-                fileSize = " [" + utils.beautifySize(this.dentryInfo.fileSize) + "]";
-                fileSize = " [" + utils.beautifySize(this.dentryInfo.fileSize) + "]";
+                fileSize = utils.beautifySize(this.dentryInfo.fileSize);
+                fileSize = utils.beautifySize(this.dentryInfo.fileSize);
             } else {
-                fileSize = " [未知大小]";
+                fileSize = "-";
             }
         }
-        let txt = this.dentryInfo.name + fileSize;
+        let title = this.dentryInfo.name + fileSize;
 
         if (!this.dentryInfo.hasChildren) {
-            return h("li", {class: "rounded-sm hover:bg-zinc-200 active:bg-zinc-900"}, [h("a", {}, [
-                h("input", {ref: "checkbox", class: "dddd-checkbox dddd-checkbox-xs", type: "checkbox", on: {change: this.onSelectChange}}),
-                h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis text-black  active:text-white", title: txt}, [
+            return h("li", {}, [h("label", {class: "rounded-sm"}, [
+                h("input", {ref: "checkbox", class: "dddd-checkbox dddd-checkbox-xs dddd-checkbox-neutral", type: "checkbox", on: {change: this.onSelectChange}}),
+                h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis pointer-events-none", title: title}, [
                     h("span", {class: "mr-2"}, [
                         icon,
                         h("span", {ref: "downloadStat", class: "ml-2 hidden"}, [
@@ -43,7 +43,7 @@ const DentryItem = {
                             h("span", {ref: "downloadResult", class: "hidden"}, "❗")
                         ])
                     ]),
-                    h("span", {}, txt)
+                    h("span", {}, [this.dentryInfo.name, h("span", {class: "text-zinc-500 float-right"}, [fileSize])])
                 ])
             ])]);
         }
@@ -58,7 +58,7 @@ const DentryItem = {
         return h("li", {class: ""}, [
             h("details", {ref: "details", open: false, on: {"toggle": this.onChildrenOpenChange}}, [
                 h("summary", {style: {"display": "grid"}}, [
-                    h("input", {ref: "checkbox", class: "dddd-checkbox dddd-checkbox-xs", type: "checkbox", on: {change: this.onSelectChange}}),
+                    h("input", {ref: "checkbox", class: "dddd-checkbox dddd-checkbox-xs dddd-checkbox-neutral", type: "checkbox", on: {change: this.onSelectChange}}),
                     h("span", {on: {click: this.onDentryItemClick}, class: "whitespace-nowrap overflow-hidden overflow-ellipsis", title: this.dentryInfo.name}, [
                         h("span", {class: "mr-2"}, [
                             h("span", {ref: "diricon"}, icon),
@@ -69,7 +69,7 @@ const DentryItem = {
                                 h("span", {ref: "downloadResult", class: "hidden"}, "❗")
                             ])
                         ]),
-                        txt
+                        h("span", {}, [this.dentryInfo.name])
                     ])
                 ]),
                 h("ul", {ref: "children"}, childrenDom)
