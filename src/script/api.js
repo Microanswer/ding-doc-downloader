@@ -1,5 +1,6 @@
 const httpRequest = require("./Http");
 const utils = require("./util");
+const {adoc2md} = require("./component/adoc2md");
 const accessToken = {value: ""};
 const corpId = {value: ""};
 
@@ -313,6 +314,49 @@ let content =
 // queryExportStatus
 //
 
+/**
+ * 将钉钉文档导出为 markdown。 经过研究半天的研究，发现钉钉文档导出为markdown的情况是直接在浏览器中进行的，直接将文档数据通过
+ * JavaScript代码拼装为markdown文本。
+ *
+ * 一开始我希望直接使用它网页中的代码来实现，但是那么多打包后的代码阅读起来实在是脑壳痛。翻来覆去在网页代码里面艰难爬行了半天
+ * 最终abandon(放弃)了，还是直接直接根据文档元数据内容实现渲染吧~~。
+ *
+ * adoc的元数据来自 https://alidocs.dingtalk.com/api/document/data 接口的 data.documentContent.checkpoint.content 这里面。
+ * 这个字段是一个字符串，字符串内容是一个json，parse即可得到文档元数据对象。在该对象的parts[0].data.body中保存了整个文档的每个段落，
+ * 每句话，每个代码块每张图片区的内容信息。
+ *
+ * 格式是一个数组，数组定义内容如下：
+ *
+ * let frame = [
+ *     "", // 第一个元素标识html节点名，比如：p, h1,h2,span 这些。 不过对于文档根节点， 这个必为 root
+ *     {}, // 第二个元素是该节点的配置对象，里面根据不同的元素有不同的配置内容，比如：标题、颜色、坐标、间距信息等。
+ *
+ *     [], // 第三个及第三个之后所有的内容，都是该节点的子内容。子内容可以是：直接一个字符串文本内容，或者又是一个这种 frame 数据格式的数组。
+ *     ...,
+ *     ...
+ * ]
+ *
+ *
+ * @param docKey
+ * @param dentryKey
+ * @param name
+ */
+async function downloadDingDoc2md(docKey, dentryKey, name) {
+    if (name.includes(".")) {
+        let ns = name.split(".");
+        ns.pop();
+        name = ns.join(".").trim();
+    }
+
+    const {data: docData} = await getDocumentData(dentryKey, docKey);
+
+    let markdownTxt = adoc2md(Object.values(JSON.parse(docData.documentContent.checkpoint.content).parts).find(p => p.type === "application/x-alidocs-word").data.body);
+
+    markdownTxt = `# ${name}\n\n${markdownTxt}`;
+
+    const blob = new Blob([markdownTxt], { type: "text/plain" });
+    return URL.createObjectURL(blob);
+}
 
 async function downloadDingDoc2pdf(docKey,dentryKey,name) {
     if (name.includes(".")) {
@@ -700,7 +744,7 @@ module.exports = {
         } else if (downloadFileType === ".pdf") {
             return downloadDingDoc2pdf(docKey, dentryKey, name);
         } else if (downloadFileType === ".md") {
-
+            return downloadDingDoc2md(docKey, dentryKey, name);
         } else {
             throw new Error(`不支持导出为${downloadFileType}格式`);
         }
