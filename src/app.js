@@ -28,7 +28,7 @@ if (ddddom) {
                 }, [
                     h("div", {class: "dddd-card-body"}, [
                         h("h2", {class: "dddd-card-title flex flex-row"}, [
-                            h("span", null, `钉钉文档下载器`),
+                            h("span", {class: "font-bold"}, `钉钉文档下载器`),
                             h("small", {class: "align-bottom"}, `v${version}`),
                             h("div", {class: "flex-grow"}, []),
 
