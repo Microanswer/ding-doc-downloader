@@ -143,10 +143,17 @@ class InlineFrame extends BaseFrame {
         let be = "";
 
 
+
         if (tagOption.bold) {
             be += "**";
         }
 
+        if (tagOption.strike) {
+            be += "~~"
+        }
+        if (tagOption.italic) {
+            be += tagOption.bold ? "_" : "*";
+        }
         if (!this.#pre) {
             return be;
         } else {
@@ -159,9 +166,17 @@ class InlineFrame extends BaseFrame {
 
     getAfter(tagName, tagOption, areadyMD, workSpace) {
         let af = "";
+
+        if (tagOption.italic) {
+            af += tagOption.bold ? "_" : "*";
+        }
+        if (tagOption.strike) {
+            af += "~~"
+        }
         if (tagOption.bold) {
             af += "**";
         }
+
         if (!this.#after) {
             return af;
         } else {
