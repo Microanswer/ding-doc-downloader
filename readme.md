@@ -7,6 +7,7 @@
 ## 预览
 
 ![](./preview.png)
+![](./preview2.png)
 
 
 ## 使用方法
