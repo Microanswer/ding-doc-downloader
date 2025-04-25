@@ -3,7 +3,7 @@ const Main = require("./script/component/main");
 const { dconfirm, dalert} = require("./script/component/dialog");
 const CellRadios = require("./script/component/settings/cell_radios");
 const {getCfg, CFG_KEY, setCfg} = require("./script/cfg");
-const version = "1.0.2";
+const version = require("./script/version");
 
 let ddddom = document.querySelector(`.my-dingdocdownloader`);
 
@@ -59,7 +59,7 @@ if (ddddom) {
                             h("p", null, "欢迎您使用钉钉文档下载器，点击【开始】按钮选择你要下载的文档。"),
                             h("div", {class: "mt-2 dddd-alert dddd-alert-warning", role: "alert"}, [
                                 h("div", {class: "h-6 w-6 shrink-0 stroke-current", style:{fontSize: "19px"}}, "⚠"),
-                                h("small", {}, "本工具仅作学习交流，请勿商用。由本工具造成的任何损失由用户自身承担，点击开始表示同意本政策。")
+                                h("span", {class: ""}, "本工具仅作学习交流，请勿商用。由本工具造成的任何损失由用户自身承担，点击开始表示同意本政策。")
                             ])
                         ]),
                         h("div", {ref: "cardactions", class: "dddd-card-actions justify-end"}, [
@@ -139,8 +139,20 @@ function showSettings() {
                             {label: "导出为 .pdf", value: ".pdf"},
                         ]
                     },
-                    on: {change: (newOp) => {setCfg(CFG_KEY.EXPORT_ADOC_AS, newOp.value)}}
+                    on: {change: (newOp) => {
+                        setCfg(CFG_KEY.EXPORT_ADOC_AS, newOp.value);
+                        if (newOp.value === ".md") {
+                            this.$refs.mdtip.classList.remove("hidden");
+                        } else {
+                            this.$refs.mdtip.classList.add("hidden")
+                        }
+                    }}
                 }),
+                h("li", {ref: "mdtip", class: getCfg(CFG_KEY.EXPORT_ADOC_AS, ".docx") === ".md" ? "" : "hidden"}, [
+                    h("div", {class: "mb-2 p-4 bg-amber-400 rounded rounded-md text-sm"}, [
+                        h("div", {class: ""}, "您选择了导出为 .md 格式。钉钉文档有许多功能无法完全在Markdown上呈现，比如：文档内附件、文档内流程图等，如果某文档中存在这些内容，那么在导出的md文件中会显示为不支持，并提供原钉钉文档链接。建议选择导出格式为 .docx 或 .pdf"),
+                    ])
+                ]),
                 h("CellRadios", {
                     props: {
                         title: "表格(.axls)",

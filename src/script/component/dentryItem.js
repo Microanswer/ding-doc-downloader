@@ -190,7 +190,7 @@ const DentryItem = {
         },
 
         // 如果本文件被选中了，那么下载本文件。
-        async $download(dirHandler) {
+        async $download(dirHandler, warnmap) {
 
             let selected = this.$refs.checkbox.checked; // 当前文件是否选中。
             let hasSelected = this.$hasSelected(); // 当前文件或下级内容是否有选中的。
@@ -230,7 +230,22 @@ const DentryItem = {
                         } else if (extension === "amind") {
                             url = await downloadAmind(this.dentryInfo.dentryKey, this.dentryInfo.docKey);
                         } else if (extension === "adoc") {
-                            url = await downloadAdoc(this.dentryInfo.dentryUuid, this.dentryInfo.docKey, this.dentryInfo.dentryKey, this.dentryInfo.contentType, this.dentryInfo.name, this.dentryInfo.fileSize, newext);
+                            let durl = await downloadAdoc(this.dentryInfo.dentryUuid, this.dentryInfo.docKey, this.dentryInfo.dentryKey, this.dentryInfo.contentType, this.dentryInfo.name, this.dentryInfo.fileSize, newext);
+                            if (typeof durl === "string") {
+                                url = durl
+                            } else {
+                                url = durl[0];
+
+                                let warns = durl[1];
+                                if (warns && warns.length > 0) {
+                                    warnmap.push({
+                                        name: currentFileHandler.name,
+                                        warns: warns,
+                                    });
+                                }
+
+                            }
+
                         } else if (extension === "axls") {
                             url = await downloadAxls(this.dentryInfo.dentryUuid, this.dentryInfo.docKey, this.dentryInfo.dentryKey, this.dentryInfo.contentType, this.dentryInfo.name, this.dentryInfo.fileSize);
                         } else if (this.dentryInfo.contentType !== "alidoc" && this.dentryInfo.contentType !== "link") {
@@ -263,6 +278,8 @@ const DentryItem = {
                                 this.$refs.downloadResult.classList.remove("hidden");
                                 this.$refs.downloadResult.textContent = "❗";
                                 this.$refs.downloadResult.title = `下载出错：${progressStat.error}`;
+
+                                this.$el.title = `下载出错：${progressStat.error}`;
                             }
                         });
                     }catch (e) {
@@ -271,6 +288,7 @@ const DentryItem = {
                         this.$refs.downloadResult.classList.remove("hidden");
                         this.$refs.downloadResult.textContent = "❗";
                         this.$refs.downloadResult.title = `下载请求出错：${e.message}`;
+                        this.$el.title = `下载请求出错：${e.message}`;
                     }
                 }
 
@@ -296,7 +314,7 @@ const DentryItem = {
                 }
 
                 for (let i = 0; i < allDi.length; i++) {
-                    await allDi[i].$download(currentDirHandle);
+                    await allDi[i].$download(currentDirHandle, warnmap);
                 }
             }
         }

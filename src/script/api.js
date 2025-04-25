@@ -340,8 +340,9 @@ let content =
  * @param docKey
  * @param dentryKey
  * @param name
+ * @param dentryId
  */
-async function downloadDingDoc2md(docKey, dentryKey, name) {
+async function downloadDingDoc2md(docKey, dentryKey, name, dentryId) {
     if (name.includes(".")) {
         let ns = name.split(".");
         ns.pop();
@@ -350,12 +351,12 @@ async function downloadDingDoc2md(docKey, dentryKey, name) {
 
     const {data: docData} = await getDocumentData(dentryKey, docKey);
 
-    let markdownTxt = adoc2md(Object.values(JSON.parse(docData.documentContent.checkpoint.content).parts).find(p => p.type === "application/x-alidocs-word").data.body);
+    let [markdownTxt, warns] = adoc2md(docData.documentContent.checkpoint.content, `https://alidocs.dingtalk.com/i/nodes/${dentryId}`);
 
     markdownTxt = `# ${name}\n\n${markdownTxt}`;
 
     const blob = new Blob([markdownTxt], { type: "text/plain" });
-    return URL.createObjectURL(blob);
+    return [URL.createObjectURL(blob), warns];
 }
 
 async function downloadDingDoc2pdf(docKey,dentryKey,name) {
@@ -744,7 +745,7 @@ module.exports = {
         } else if (downloadFileType === ".pdf") {
             return downloadDingDoc2pdf(docKey, dentryKey, name);
         } else if (downloadFileType === ".md") {
-            return downloadDingDoc2md(docKey, dentryKey, name);
+            return downloadDingDoc2md(docKey, dentryKey, name, dentryUuid);
         } else {
             throw new Error(`不支持导出为${downloadFileType}格式`);
         }

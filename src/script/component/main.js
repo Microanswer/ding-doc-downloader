@@ -2,6 +2,7 @@ const DentryItem = require("./dentryItem");
 const {getDocList, getSpaceInfo} = require("../api");
 const {dalert} = require("./dialog");
 const DingTalkDomain = "alidocs.dingtalk.com";
+const version = require("../version");
 
 
 module.exports = {
@@ -90,14 +91,23 @@ module.exports = {
                 return;
             }
 
+            // 下载完成后，会产生一些警告。
+            const warnmap = [];
+
 
             try {
                 // 先让用户选择一个目录保存。
                 const dirHandle = await window.showDirectoryPicker();
 
                 for (let i = 0; i < allDi.length; i++) {
-                    await allDi[i].$download(dirHandle);
+                    await allDi[i].$download(dirHandle, warnmap);
                 }
+
+                // 真的有警告，那么提示出来。
+                if (warnmap.length > 0) {
+                    this.showWarnMap(warnmap);
+                }
+
             }catch (e) {
                 if (e.code === DOMException.ABORT_ERR) {
                     // 用户取消了，这种错不用提示。
@@ -151,6 +161,24 @@ module.exports = {
             this.$refs.list.append(this.$createElement(h => {
                 return h("DentryItem", {ref: "di", props: () => ({dentryInfo: dentryInfo, hasmoredata: false}), on: {selectChange: this.onDentrySelectChange}})
             }))
+        },
+        showWarnMap(warnMap) {
+
+            dalert(`已导出勾选的 - 但请您注意 - 钉钉文档下载器 v${version}`, this.$createElement(h => {
+                return h("div", {}, [
+                    h("div", {class: "mb-4 bg-amber-400 text-sm p-4 rounded-md"}, "由于Markdown内容支持单一，钉钉文档部分内容无法在 Markdown 中呈现。对于不支持的部分，在导出的md文件中会保留文档的打开链接，您可以打开链接查看钉钉文档原文。建议钉钉文档(.adoc)导出为 .docx 或 .pdf"),
+                    h("ul", {}, warnMap.map(warn => {
+                        return h("li", {}, [
+                            h("span", {}, [
+                                "文件：",h("span", {class: "font-bold"}, warn.name)
+                            ]),
+                            h("div", {}, warn.warns.map(warnStr => {
+                                return h("div", {class: "text-sm text-zinc-600"}, warnStr)
+                            }))
+                        ])
+                    }))
+                ]);
+            }));
         }
     },
     data: {
