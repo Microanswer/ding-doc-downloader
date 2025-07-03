@@ -21,22 +21,28 @@ let utils = {
         return new Promise(resolve => setTimeout(resolve, time));
     },
 
-    fixFileName(fileName) {
-        if (typeof fileName === "undefined") return undefined;
-        if (fileName.trim().length === 0) return fileName;
+    fixFileName(input) {
+        const reservedNames = new Set([
+            'CON', 'PRN', 'AUX', 'NUL',
+            'COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9',
+            'LPT1','LPT2','LPT3','LPT4','LPT5','LPT6','LPT7','LPT8','LPT9'
+        ]);
 
-        return fileName.replace(/[\\/:*?"<>|]/g, function (matchStr) {
-            return {
-                "\\": "_",
-                "/": "-",
-                ":": ".",
-                "*": "-",
-                "\"": "'",
-                "<": "[",
-                ">": "]",
-                "|": "!"
-            }[matchStr] || "_";
-        });
+        // 1. 过滤非法字符
+        const cleaned = input.replace(/[^a-zA-Z\u4e00-\u9fff\u3000-\u303F_\-.\[\]!]/gu, '');
+
+        // 2. 移除开头和结尾的点（.）或空格
+        let trimmed = cleaned.trim().replace(/^[.]+|[.]+$/g, '');
+
+        // 3. 默认文件名（避免空）
+        if (trimmed === '') trimmed = 'untitled';
+
+        // 4. 避免保留字（如 CON），加前缀
+        if (reservedNames.has(trimmed.toUpperCase())) {
+            trimmed = '_' + trimmed;
+        }
+
+        return trimmed;
     }
 };
 
