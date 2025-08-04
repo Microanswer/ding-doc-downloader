@@ -29,7 +29,7 @@ let utils = {
         ]);
 
         // 1. 过滤非法字符
-        const cleaned = input.replace(/[^a-zA-Z\u4e00-\u9fff\u3000-\u303F_\-.\[\]!]/gu, '');
+        const cleaned = input.replace(/[^0-9a-zA-Z\u4e00-\u9fff\u3000-\u303F_\-.\[\]!]/gu, '');
 
         // 2. 移除开头和结尾的点（.）或空格
         let trimmed = cleaned.trim().replace(/^[.]+|[.]+$/g, '');
