@@ -39,7 +39,7 @@ function getDingWebAppVersion() {
     //     return window.WSM_config.appVersion;
     // }
 
-    return "4.78.1";
+    return "4.85.4";
 
 }
 
@@ -367,21 +367,32 @@ async function downloadDingDoc2pdf(docKey,dentryKey,name) {
     }
 
     const {data: docData} = await getDocumentData(dentryKey, docKey);
+
+    let nick = docData.fileMetaInfo.creator.nick;
+    let corpId = docData.fileMetaInfo.corpId;
+    let corpName = docData.userInfo.orgs.find(org => org.corpId === corpId).name;
+    let watermark = "CLOSE";
+    if (docData.fileMetaInfo.securityPolicyControl.watermarkEnable) {
+        nick = docData.fileMetaInfo.securityPolicyControl.watermarkText.rowTwo;
+        corpName = docData.fileMetaInfo.securityPolicyControl.watermarkText.rowOne;
+        watermark = "OPEN";
+    }
+
     const uploadBody = JSON.stringify({
         asl: docData.documentContent.checkpoint.content,
         optionsString: JSON.stringify({
             "openToken": {
-                "docOpenToken": await getDocOpenToken(dentryKey, docKey, await getCorpId()),
-                "corpId": await getCorpId(),
+                "docOpenToken": await getDocOpenToken(dentryKey, docKey, corpId),
+                "corpId": corpId,
                 "docKey": docKey
             },
             "isNew": true,
             "customConfig": {
                 "content": "ONLYCONTENT",
                 "mode": "PORTRAIT",
-                "watermark": "OPEN",
-                "nick": docData.fileMetaInfo.securityPolicyControl.watermarkText.rowTwo,
-                "corpName": docData.fileMetaInfo.securityPolicyControl.watermarkText.rowOne,
+                "watermark": watermark,
+                "nick": nick,
+                "corpName": corpName,
                 "link": "",
                 "enableTableAutofitWidth": true
             },
@@ -392,7 +403,7 @@ async function downloadDingDoc2pdf(docKey,dentryKey,name) {
             "version": 1,
             "appVersion": getDingWebAppVersion(),
             "exportType": "pdf",
-            "corpId": await getCorpId(),
+            "corpId": corpId,
             "lang": "zh-CN"
         })
     });
