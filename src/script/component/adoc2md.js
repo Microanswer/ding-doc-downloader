@@ -421,6 +421,7 @@ registFrame("card", new CardFrame());
 registFrame("container", new BlockFrame(":::", ":::"));
 registFrame("tc", new TcFrame());
 registFrame("span", new InlineFrame("", ""));
+registFrame("cangjie-textinline", new InlineFrame("`", "`"));
 registFrame("inlineCode", new InlineFrame("`", "`"));
 registFrame("code", new CodeFrame());
 registFrame("root", new RootFrame());
@@ -494,7 +495,7 @@ function adoc2md(docContent, docUrl) {
     let doc = Object.values(docContent.parts).find(p => p.type==="application/x-alidocs-word").data.body;
     let f = getFrame(doc[0]);
     if (!f) {
-        throw new Error(`不支持渲染节点:${f}`);
+        throw new Error(`不支持渲染节点:${f}\n 按F12打开控制台，将`);
     }
     const w =  new WorkSpace();
     const warns = [];
