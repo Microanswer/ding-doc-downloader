@@ -1,7 +1,8 @@
 const DentryItem = require("./dentryItem");
 const {getDocList, getSpaceInfo} = require("../api");
 const {dalert} = require("./dialog");
-const DingTalkDomain = "alidocs.dingtalk.com";
+// const DingTalkDomain = "alidocs.dingtalk.com"; // 旧版钉钉文档域名
+const DingTalkDomain = "docs.dingtalk.com"; // 新版钉钉文档域名
 const version = require("../version");
 
 
