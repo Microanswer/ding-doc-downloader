@@ -1,9 +1,9 @@
 const DentryItem = require("./dentryItem");
 const {getDocList, getSpaceInfo} = require("../api");
 const {dalert} = require("./dialog");
-// const DingTalkDomain = "alidocs.dingtalk.com"; // 旧版钉钉文档域名
-const DingTalkDomain = "docs.dingtalk.com"; // 新版钉钉文档域名
 const version = require("../version");
+
+const DingTalkDomains = ["alidocs.dingtalk.com"/*旧*/, "docs.dingtalk.com"]; // 新版钉钉文档域名(同时也要兼容旧版本)
 
 
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
             this.$refs.reloadBtn.classList.add("hidden");
 
             let href = window.location.href;
-            if (href.indexOf(DingTalkDomain) === -1) {
+            if (DingTalkDomains.some(DingTalkDomain => href.indexOf(DingTalkDomain) === -1)) {
                 // 不在钉钉文档界面
                 this.$refs.progressTip.classList.add("text-error");
                 this.$refs.progressTip.textContent = "读取失败，当前页面不是钉钉文档页面。请打开钉钉文档页面后再打开本工具。";

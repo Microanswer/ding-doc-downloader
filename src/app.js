@@ -216,6 +216,14 @@ function showHelp$About() {
             h("div", {class: "mt-4"}, [
                 h("div", {class: "font-bold"}, "版本变更记录"),
                 h("div", {class: ""}, [
+                    h("div", {}, "v1.0.6："),
+                    h("ul", {}, [
+                        h("li", {class: "text-sm text-zinc-600"}, "1、修复钉钉文档下载为pdf在没有水印的情况下出错。"),
+                        h("li", {class: "text-sm text-zinc-600"}, "2、修复文件名中数字被抹除的问题。"),
+                        h("li", {class: "text-sm text-zinc-600"}, "3、添加新钉钉文档域名支持。@niezhili"),
+                    ])
+                ]),
+                h("div", {class: ""}, [
                     h("div", {}, "v1.0.2："),
                     h("ul", {}, [
                         h("li", {class: "text-sm text-zinc-600"}, "1、新增设置&菜单功能"),
