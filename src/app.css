@@ -8,6 +8,9 @@ html {
     scrollbar-gutter: auto !important;
 }
 
+.ddddddoc-root *{
+    @apply text-base-content!   
+}
 
 .dddd-menu li a:hover{
     background-color: color-mix(in oklab, var(--color-base-content) 10%, transparent)!important;

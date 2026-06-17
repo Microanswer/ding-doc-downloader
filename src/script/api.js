@@ -100,7 +100,7 @@ async function getCorpId() {
     }
 
     return getUserInfo().then(({data}) => {
-        return data.orgs.find(org => org.isMainOrg).corpId;
+        return data.orgs.find(org => org.isMainOrg)?.corpId || " ";
     });
 }
 

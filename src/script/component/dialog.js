@@ -13,7 +13,7 @@ function Dialog(title, msg, onConfirm) {
             }
 
 
-            return h("div", { class: "dddd-modal ddddddoc-root"},[
+            return h("div", { class: "dddd-modal ddddddoc-root text-base-content"},[
                 h("div", {class: "dddd-modal-box"},[
                     h("h3", {class: "text-lg font-bold"}, title),
                     h("p", {class: "py-4"}, msg),

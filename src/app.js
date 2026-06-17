@@ -26,10 +26,10 @@ if (ddddom) {
                     class: "my-dingdocdownloader ddddddoc-root dddd-card bg-base-100 shadow-xl border border-zinc-300",
                     style: {position: "fixed", right: "20px", bottom: "20px", zIndex: "10", width: "32rem"}
                 }, [
-                    h("div", {class: "dddd-card-body"}, [
+                    h("div", {class: "dddd-card-body text-base-content!"}, [
                         h("h2", {class: "dddd-card-title flex flex-row"}, [
-                            h("span", {class: "font-bold"}, `钉钉文档下载器`),
-                            h("small", {class: "align-bottom"}, `v${version}`),
+                            h("span", {class: "font-bold text-base-content!"}, `钉钉文档下载器`),
+                            h("small", {class: "align-bottom text-base-content!"}, `v${version}`),
                             h("div", {class: "flex-grow"}, []),
 
                             h("button", {
@@ -42,8 +42,8 @@ if (ddddom) {
                             h("details", {ref: "menubtn", class: "dddd-dropdown dddd-dropdown-end hidden"}, [
                                 h("summary", {class: "dddd-btn dddd-btn-ghost dddd-btn-xs dddd-btn-circle", title: "菜单", style: {display: "grid", fontSize: '14px'}}, "≡"),
                                 h("ul", {class: "dddd-menu dddd-dropdown-content bg-base-100 rounded-box z-1 w-32 p-2 shadow-sm"}, [
-                                    h("li", {class: "rounded-sm hover:bg-zinc-200"}, [h("a", {on: {click: this.onSettingsClick}}, "设置")]),
-                                    h("li", {class: "rounded-sm hover:bg-zinc-200"}, [h("a", {on: {click: this.onAboutClick}}, "帮助&关于")])
+                                    h("li", {class: "rounded-sm hover:bg-base-200"}, [h("a", {on: {click: this.onSettingsClick}}, "设置")]),
+                                    h("li", {class: "rounded-sm hover:bg-base-200"}, [h("a", {on: {click: this.onAboutClick}}, "帮助&关于")])
                                 ])
                             ]),
                             h("button", {
@@ -124,8 +124,8 @@ if (ddddom) {
 
 function showSettings() {
     dalert(`设置 - 钉钉文档下载器 v${version}`, this.$createElement(h => {
-        return h("div", {class: ""}, [
-            h("div", {class: "font-bold text-zinc-500 mb-1"}, "导出格式"),
+        return h("div", {class: "text-base-content!"}, [
+            h("div", {class: "font-bold mb-1"}, "导出格式"),
             h("ul", {class: "flex flex-col gap-2 select-none"}, [
 
                 h("CellRadios", {
@@ -149,7 +149,7 @@ function showSettings() {
                     }}
                 }),
                 h("li", {ref: "mdtip", class: getCfg(CFG_KEY.EXPORT_ADOC_AS, ".docx") === ".md" ? "" : "hidden"}, [
-                    h("div", {class: "mb-2 p-4 bg-amber-400 rounded rounded-md text-sm"}, [
+                    h("div", {class: "mb-2 p-4 bg-amber-400/70 rounded rounded-md text-xs"}, [
                         h("div", {class: ""}, "您选择了导出为 .md 格式。钉钉文档有许多功能无法完全在Markdown上呈现，比如：文档内附件、文档内流程图等，如果某文档中存在这些内容，那么在导出的md文件中会显示为不支持，并提供原钉钉文档链接。建议选择导出格式为 .docx 或 .pdf"),
                     ])
                 ]),
@@ -187,8 +187,8 @@ function showSettings() {
                     on: {change: (newOp) => {setCfg(CFG_KEY.EXPORT_AMIND_AS, newOp.value)}}
                 }),
 
-                h("li", {class: "flex flex-row justify-between items-center px-3 py-1 bg-zinc-100 rounded-sm"}, [
-                    h("div", {class: "text-xs text-zinc-600"}, "多维表格及快捷方式不支持导出。其它不属于钉钉体系文档的文件按原文件导出。"),
+                h("li", {class: "flex flex-row justify-between items-center px-3 py-1 bg-base-300 rounded-sm"}, [
+                    h("div", {class: "text-xs text-base-content/60"}, "多维表格及快捷方式不支持导出。其它不属于钉钉体系文档的文件按原文件导出。"),
                 ]),
             ]),
         ])
@@ -218,30 +218,30 @@ function showHelp$About() {
                 h("div", {class: ""}, [
                     h("div", {}, "v1.0.6："),
                     h("ul", {}, [
-                        h("li", {class: "text-sm text-zinc-600"}, "1、修复钉钉文档下载为pdf在没有水印的情况下出错。"),
-                        h("li", {class: "text-sm text-zinc-600"}, "2、修复文件名中数字被抹除的问题。"),
-                        h("li", {class: "text-sm text-zinc-600"}, "3、添加新钉钉文档域名支持。@niezhili"),
+                        h("li", {class: "text-sm text-base-content/60"}, "1、修复钉钉文档下载为pdf在没有水印的情况下出错。"),
+                        h("li", {class: "text-sm text-base-content/60"}, "2、修复文件名中数字被抹除的问题。"),
+                        h("li", {class: "text-sm text-base-content/60"}, "3、添加新钉钉文档域名支持。@niezhili"),
                     ])
                 ]),
                 h("div", {class: ""}, [
                     h("div", {}, "v1.0.2："),
                     h("ul", {}, [
-                        h("li", {class: "text-sm text-zinc-600"}, "1、新增设置&菜单功能"),
-                        h("li", {class: "text-sm text-zinc-600"}, "2、新增导出其它格式支持，取决于钉钉文档支持哪些导出格式。"),
-                        h("li", {class: "text-sm text-zinc-600"}, "3、升级 tailwindcss 到4.1.4版本。"),
-                        h("li", {class: "text-sm text-zinc-600"}, "4、升级 daisyui 到5.0.23版本。"),
+                        h("li", {class: "text-sm text-base-content/60"}, "1、新增设置&菜单功能"),
+                        h("li", {class: "text-sm text-base-content/60"}, "2、新增导出其它格式支持，取决于钉钉文档支持哪些导出格式。"),
+                        h("li", {class: "text-sm text-base-content/60"}, "3、升级 tailwindcss 到4.1.4版本。"),
+                        h("li", {class: "text-sm text-base-content/60"}, "4、升级 daisyui 到5.0.23版本。"),
                     ])
                 ]),
                 h("div", {class: ""}, [
                     h("div", {}, "v1.0.1："),
                     h("ul", {}, [
-                        h("li", {class: "text-sm text-zinc-600"}, "1、修复目录下文件过多时，未进行分页加载导致的下载不全问题。"),
+                        h("li", {class: "text-sm text-base-content/60"}, "1、修复目录下文件过多时，未进行分页加载导致的下载不全问题。"),
                     ])
                 ]),
                 h("div", {class: ""}, [
                     h("div", {}, "v1.0.0："),
                     h("ul", {}, [
-                        h("li", {class: "text-sm text-zinc-600"}, "1、正式发布。"),
+                        h("li", {class: "text-sm text-base-content/60"}, "1、正式发布。"),
                     ])
                 ]),
             ]),
